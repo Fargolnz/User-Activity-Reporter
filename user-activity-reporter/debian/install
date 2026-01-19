@@ -1,6 +1,4 @@
-src/hello-world usr/bin
-src/hello-info usr/bin
-src/hello-lib.sh usr/share/hello-world
-src/hello.conf etc/hello-world
-man/hello-world.1 usr/share/man/man1
-man/hello-info.1 usr/share/man/man1
+src/user-activity-reporter usr/bin
+src/user-activity-lib.sh usr/share/user-activity-reporter
+src/user-activity.conf etc/user-activity-reporter
+man/user-activity-reporter.1 usr/share/man/man1

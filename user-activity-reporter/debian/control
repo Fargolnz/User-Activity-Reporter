@@ -1,18 +1,26 @@
-Source: hello-world
-Section: utils
+Source: user-activity-reporter
+Section: admin
 Priority: optional
-Maintainer: Your Name <your.email@example.com>
+Maintainer: Team Name <team.email@example.com>
 Build-Depends: debhelper-compat (= 13)
 Standards-Version: 4.6.0
 Rules-Requires-Root: no
 
-Package: hello-world
+Package: user-activity-reporter
 Architecture: all
 Depends: ${misc:Depends}, bash
-Description: A simple hello world package with multiple commands
- This package provides two commands:
-  - hello-world: prints a customizable greeting
-  - hello-info: displays system information
+Description: User Activity Reporter for Linux
+ A comprehensive CLI tool for monitoring and reporting user activities
+ including login times, online duration, and process counts.
  .
- It demonstrates Linux packaging with multiple executables,
- shared libraries, and configuration files.
+ Features:
+  - Real-time monitoring with configurable refresh interval
+  - Multiple export formats (JSON, CSV, TXT)
+  - Sorting and filtering options
+  - Color-coded display
+  - Configurable output settings
+  - Activity thresholds and alerts
+  - Support for --help and --version flags
+ .
+ This tool is useful for system administrators who need to track
+ user activity on Linux systems.

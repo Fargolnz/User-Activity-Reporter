@@ -6,11 +6,10 @@ export DH_VERBOSE = 1
 	dh $@
 
 override_dh_auto_install:
-	$(MAKE) install DESTDIR=$(CURDIR)/debian/hello-world PREFIX=/usr
+	$(MAKE) install DESTDIR=$(CURDIR)/debian/user-activity-reporter PREFIX=/usr
 
 override_dh_fixperms:
 	dh_fixperms
-	chmod 755 $(CURDIR)/debian/hello-world/usr/bin/hello-world
-	chmod 755 $(CURDIR)/debian/hello-world/usr/bin/hello-info
-	chmod 644 $(CURDIR)/debian/hello-world/usr/share/hello-world/hello-lib.sh
-	chmod 644 $(CURDIR)/debian/hello-world/etc/hello-world/hello.conf
+	chmod 755 $(CURDIR)/debian/user-activity-reporter/usr/bin/user-activity-reporter
+	chmod 644 $(CURDIR)/debian/user-activity-reporter/usr/share/user-activity-reporter/user-activity-lib.sh
+	chmod 644 $(CURDIR)/debian/user-activity-reporter/etc/user-activity-reporter/user-activity.conf
