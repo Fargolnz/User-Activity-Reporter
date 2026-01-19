@@ -1,0 +1,6 @@
+src/hello-world usr/bin
+src/hello-info usr/bin
+src/hello-lib.sh usr/share/hello-world
+src/hello.conf etc/hello-world
+man/hello-world.1 usr/share/man/man1
+man/hello-info.1 usr/share/man/man1

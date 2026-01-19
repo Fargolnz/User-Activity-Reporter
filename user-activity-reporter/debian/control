@@ -1,0 +1,18 @@
+Source: hello-world
+Section: utils
+Priority: optional
+Maintainer: Your Name <your.email@example.com>
+Build-Depends: debhelper-compat (= 13)
+Standards-Version: 4.6.0
+Rules-Requires-Root: no
+
+Package: hello-world
+Architecture: all
+Depends: ${misc:Depends}, bash
+Description: A simple hello world package with multiple commands
+ This package provides two commands:
+  - hello-world: prints a customizable greeting
+  - hello-info: displays system information
+ .
+ It demonstrates Linux packaging with multiple executables,
+ shared libraries, and configuration files.

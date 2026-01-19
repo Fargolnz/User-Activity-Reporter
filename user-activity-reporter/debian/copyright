@@ -1,0 +1,11 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: hello-world
+Source: https://github.com/example/hello-world
+
+Files: *
+Copyright: 2025 Your Name
+License: MIT
+
+License: MIT
+ Permission is hereby granted, free of charge, to any person obtaining
+ a copy of this software to deal in the Software without restriction.
