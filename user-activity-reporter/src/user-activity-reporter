@@ -1,0 +1,486 @@
+#!/bin/bash
+# user-activity-reporter - User Activity Reporter for Linux
+# Part of user-activity-reporter package
+
+VERSION="1.0.0"
+LIB_PATH="./user-activity-lib.sh"
+CONF_PATH="./user-activity.conf"
+
+# Default values
+SHOW_ALL=true
+SPECIFIC_USER=""
+SORT_FIELD="user"
+REVERSE_SORT=false
+WATCH_MODE=false
+WATCH_INTERVAL=5
+OUTPUT_FILE=""
+OUTPUT_FORMAT="table"
+CUSTOM_CONFIG=""
+NO_COLOR=false
+PROCESS_THRESHOLD=0
+
+# Source library if exists
+[ -f "$LIB_PATH" ] && source "$LIB_PATH"
+
+# Source configuration if exists
+[ -f "$CONF_PATH" ] && source "$CONF_PATH"
+
+# Override with custom config if specified
+[ -n "$CUSTOM_CONFIG" ] && [ -f "$CUSTOM_CONFIG" ] && source "$CUSTOM_CONFIG"
+
+# Display help message
+show_help() {
+    cat << EOF
+User Activity Reporter v${VERSION}
+
+USAGE:
+    user-activity-reporter [OPTIONS]
+
+DESCRIPTION:
+    A comprehensive CLI tool for monitoring and reporting user activities
+    including login times, online duration, and process counts.
+
+OPTIONS:
+    -h, --help              Show this help message
+    -v, --version           Show version information
+    -u, --user USER         Show activity for specific user
+    -a, --all               Show all users (default)
+    -s, --sort FIELD        Sort by field (user, login, duration, processes)
+    -r, --reverse           Reverse sort order
+    -w, --watch [SECONDS]   Real-time monitoring mode (default: 5 seconds)
+    -o, --output FILE       Export report to file
+    -f, --format FORMAT     Output format (table, json, csv)
+    -c, --config FILE       Use custom config file
+    --no-color              Disable colored output
+    --threshold N           Alert if process count exceeds N
+
+EXAMPLES:
+    # Show all users
+    user-activity-reporter
+
+    # Show specific user
+    user-activity-reporter -u username
+
+    # Real-time monitoring (refresh every 5 seconds)
+    user-activity-reporter -w
+
+    # Export to JSON
+    user-activity-reporter -o report.json -f json
+
+    # Sort by process count
+    user-activity-reporter -s processes -r
+
+    # Show users with more than 50 processes
+    user-activity-reporter --threshold 50
+
+FILES:
+    ${CONF_PATH}    Configuration file
+    ${LIB_PATH}     Shared library functions
+
+AUTHOR:
+    Team Name <team.email@example.com>
+
+EOF
+}
+
+# Display version
+show_version() {
+    echo "user-activity-reporter version ${VERSION}"
+}
+
+# Parse command line arguments
+parse_args() {
+    while [[ $# -gt 0 ]]; do
+        case $1 in
+            -h|--help)
+                show_help
+                exit 0
+                ;;
+            -v|--version)
+                show_version
+                exit 0
+                ;;
+            -u|--user)
+                SPECIFIC_USER="$2"
+                SHOW_ALL=false
+                shift 2
+                ;;
+            -a|--all)
+                SHOW_ALL=true
+                shift
+                ;;
+            -s|--sort)
+                SORT_FIELD="$2"
+                shift 2
+                ;;
+            -r|--reverse)
+                REVERSE_SORT=true
+                shift
+                ;;
+            -w|--watch)
+                WATCH_MODE=true
+                if [[ "$2" =~ ^[0-9]+$ ]] && [ "$2" -gt 0 ]; then
+                    WATCH_INTERVAL="$2"
+                    shift 2
+                else
+                    shift
+                fi
+                ;;
+            -o|--output)
+                OUTPUT_FILE="$2"
+                shift 2
+                ;;
+            -f|--format)
+                OUTPUT_FORMAT="$2"
+                shift 2
+                ;;
+            -c|--config)
+                CUSTOM_CONFIG="$2"
+                shift 2
+                ;;
+            --no-color)
+                NO_COLOR=true
+                shift
+                ;;
+            --threshold)
+                PROCESS_THRESHOLD="$2"
+                shift 2
+                ;;
+            *)
+                echo "Error: Unknown option: $1" >&2
+                echo "Use --help for usage information" >&2
+                exit 1
+                ;;
+        esac
+    done
+}
+
+# Validate arguments
+validate_args() {
+    # Validate sort field
+    case "$SORT_FIELD" in
+        user|login|duration|processes)
+            ;;
+        *)
+            echo "Error: Invalid sort field '$SORT_FIELD'" >&2
+            echo "Valid fields: user, login, duration, processes" >&2
+            exit 1
+            ;;
+    esac
+
+    # Validate output format
+    case "$OUTPUT_FORMAT" in
+        table|json|csv)
+            ;;
+        *)
+            echo "Error: Invalid output format '$OUTPUT_FORMAT'" >&2
+            echo "Valid formats: table, json, csv" >&2
+            exit 1
+            ;;
+    esac
+
+    # Validate threshold
+    if ! [[ "$PROCESS_THRESHOLD" =~ ^[0-9]+$ ]]; then
+        echo "Error: Threshold must be a positive integer" >&2
+        exit 1
+    fi
+}
+
+# Collect user activity data
+collect_data() {
+    local users=()
+    
+    if [ "$SHOW_ALL" = true ]; then
+        # Get all users with home directories
+        while IFS=: read -r username _ uid _ _ home _; do
+            if [ "$uid" -ge 1000 ] 2>/dev/null && [ -d "$home" ]; then
+                users+=("$username")
+            fi
+        done < /etc/passwd
+    else
+        users=("$SPECIFIC_USER")
+    fi
+
+    local data=()
+    local current_time=$(date +%s)
+
+    for user in "${users[@]}"; do
+        # Check if user exists
+        if ! id "$user" &>/dev/null; then
+            continue
+        fi
+
+        # Get last login time
+        local last_login=$(last -n 1 "$user" 2>/dev/null | head -n 1 | awk '{print $3, $4, $5, $6}')
+        local last_login_timestamp=""
+        
+        if [ -n "$last_login" ] && [ "$last_login" != "wtmp" ]; then
+            last_login_timestamp=$(date -d "$last_login" +%s 2>/dev/null || echo "0")
+        fi
+
+        # Get online duration for currently logged in users
+        local duration_seconds=0
+        local duration_formatted="N/A"
+        
+        if who | grep -q "^$user "; then
+            local login_time=$(who | grep "^$user " | awk '{print $3, $4, $5}')
+            local login_timestamp=$(date -d "$login_time" +%s 2>/dev/null || echo "0")
+            duration_seconds=$((current_time - login_timestamp))
+            
+            if [ "$duration_seconds" -gt 0 ]; then
+                if command -v format_duration &>/dev/null; then
+                    duration_formatted=$(format_duration "$duration_seconds")
+                else
+                    local hours=$((duration_seconds / 3600))
+                    local minutes=$(((duration_seconds % 3600) / 60))
+                    local seconds=$((duration_seconds % 60))
+                    if [ "$hours" -gt 0 ]; then
+                        duration_formatted="${hours}h ${minutes}m"
+                    elif [ "$minutes" -gt 0 ]; then
+                        duration_formatted="${minutes}m ${seconds}s"
+                    else
+                        duration_formatted="${seconds}s"
+                    fi
+                fi
+            fi
+        fi
+
+        # Count processes
+        local process_count=$(ps -u "$user" 2>/dev/null | wc -l)
+        process_count=$((process_count - 1))  # Subtract header
+
+        # Format last login
+        local last_login_formatted="Never"
+        if [ -n "$last_login" ] && [ "$last_login" != "wtmp" ]; then
+            last_login_formatted="$last_login"
+        fi
+
+        data+=("$user|$last_login_formatted|$duration_seconds|$duration_formatted|$process_count")
+    done
+
+    echo "${data[@]}"
+}
+
+# Sort data
+sort_data() {
+    local data=("$@")
+    local sorted_data=()
+    local field_index=0
+
+    case "$SORT_FIELD" in
+        user) field_index=0 ;;
+        login) field_index=1 ;;
+        duration) field_index=2 ;;
+        processes) field_index=4 ;;
+    esac
+
+    # Create array with sort key
+    local temp_array=()
+    for entry in "${data[@]}"; do
+        local key=$(echo "$entry" | cut -d'|' -f$((field_index + 1)))
+        temp_array+=("$key|$entry")
+    done
+
+    # Sort
+    if [ "$REVERSE_SORT" = true ]; then
+        IFS=$'\n' sorted_data=($(sort -r <<<"${temp_array[*]}"))
+    else
+        IFS=$'\n' sorted_data=($(sort <<<"${temp_array[*]}"))
+    fi
+
+    # Extract original entries
+    local result=()
+    for entry in "${sorted_data[@]}"; do
+        result+=("${entry#*|}")
+    done
+
+    echo "${result[@]}"
+}
+
+# Format output as table
+format_table() {
+    local data=("$@")
+    
+    if [ ${#data[@]} -eq 0 ]; then
+        echo "No user activity data found."
+        return
+    fi
+
+    # Calculate column widths
+    local max_user_len=10
+    local max_login_len=20
+    local max_duration_len=15
+    local max_processes_len=10
+
+    for entry in "${data[@]}"; do
+        local user=$(echo "$entry" | cut -d'|' -f1)
+        local login=$(echo "$entry" | cut -d'|' -f2)
+        local duration=$(echo "$entry" | cut -d'|' -f4)
+        local processes=$(echo "$entry" | cut -d'|' -f5)
+
+        [ ${#user} -gt $max_user_len ] && max_user_len=${#user}
+        [ ${#login} -gt $max_login_len ] && max_login_len=${#login}
+        [ ${#duration} -gt $max_duration_len ] && max_duration_len=${#duration}
+        [ ${#processes} -gt $max_processes_len ] && max_processes_len=${#processes}
+    done
+
+    # Print header
+    local header=$(printf "%-${max_user_len}s  %-${max_login_len}s  %-${max_duration_len}s  %-${max_processes_len}s" \
+        "USER" "LAST LOGIN" "DURATION" "PROCESSES")
+    
+    if [ "$NO_COLOR" = false ]; then
+        echo -e "\033[1;36m$header\033[0m"
+    else
+        echo "$header"
+    fi
+
+    # Print separator
+    local separator=$(printf "%-${max_user_len}s  %-${max_login_len}s  %-${max_duration_len}s  %-${max_processes_len}s" \
+        "$(printf '%*s' $max_user_len | tr ' ' '-')" \
+        "$(printf '%*s' $max_login_len | tr ' ' '-')" \
+        "$(printf '%*s' $max_duration_len | tr ' ' '-')" \
+        "$(printf '%*s' $max_processes_len | tr ' ' '-')")
+    echo "$separator"
+
+    # Print data
+    for entry in "${data[@]}"; do
+        local user=$(echo "$entry" | cut -d'|' -f1)
+        local login=$(echo "$entry" | cut -d'|' -f2)
+        local duration=$(echo "$entry" | cut -d'|' -f4)
+        local processes=$(echo "$entry" | cut -d'|' -f5)
+
+        local line=$(printf "%-${max_user_len}s  %-${max_login_len}s  %-${max_duration_len}s  %-${max_processes_len}s" \
+            "$user" "$login" "$duration" "$processes")
+
+        # Highlight if process count exceeds threshold
+        if [ "$PROCESS_THRESHOLD" -gt 0 ] && [ "$processes" -gt "$PROCESS_THRESHOLD" ]; then
+            if [ "$NO_COLOR" = false ]; then
+                echo -e "\033[1;31m$line\033[0m"
+            else
+                echo "$line"
+            fi
+        else
+            echo "$line"
+        fi
+    done
+}
+
+# Format output as JSON
+format_json() {
+    local data=("$@")
+    local timestamp=$(date -Iseconds)
+    
+    echo "{"
+    echo "  \"timestamp\": \"$timestamp\","
+    echo "  \"users\": ["
+    
+    local first=true
+    for entry in "${data[@]}"; do
+        local user=$(echo "$entry" | cut -d'|' -f1)
+        local login=$(echo "$entry" | cut -d'|' -f2)
+        local duration_seconds=$(echo "$entry" | cut -d'|' -f3)
+        local duration_formatted=$(echo "$entry" | cut -d'|' -f4)
+        local processes=$(echo "$entry" | cut -d'|' -f5)
+
+        if [ "$first" = true ]; then
+            first=false
+        else
+            echo ","
+        fi
+
+        echo -n "    {"
+        echo -n "\"username\": \"$user\", "
+        echo -n "\"last_login\": \"$login\", "
+        echo -n "\"duration_seconds\": $duration_seconds, "
+        echo -n "\"duration_formatted\": \"$duration_formatted\", "
+        echo -n "\"process_count\": $processes"
+        echo -n "}"
+    done
+    
+    echo ""
+    echo "  ]"
+    echo "}"
+}
+
+# Format output as CSV
+format_csv() {
+    local data=("$@")
+    
+    echo "username,last_login,duration_seconds,duration_formatted,process_count"
+    
+    for entry in "${data[@]}"; do
+        local user=$(echo "$entry" | cut -d'|' -f1)
+        local login=$(echo "$entry" | cut -d'|' -f2)
+        local duration_seconds=$(echo "$entry" | cut -d'|' -f3)
+        local duration_formatted=$(echo "$entry" | cut -d'|' -f4)
+        local processes=$(echo "$entry" | cut -d'|' -f5)
+
+        echo "$user,$login,$duration_seconds,$duration_formatted,$processes"
+    done
+}
+
+# Main function
+main() {
+    parse_args "$@"
+    validate_args
+
+    if [ "$WATCH_MODE" = true ]; then
+        echo "Real-time monitoring mode (refresh every ${WATCH_INTERVAL}s)"
+        echo "Press Ctrl+C to stop"
+        echo ""
+        
+        while true; do
+            clear
+            echo "User Activity Report - $(date '+%Y-%m-%d %H:%M:%S')"
+            echo ""
+            
+            local raw_data=($(collect_data))
+            local sorted_data=($(sort_data "${raw_data[@]}"))
+            
+            case "$OUTPUT_FORMAT" in
+                table)
+                    format_table "${sorted_data[@]}"
+                    ;;
+                json)
+                    format_json "${sorted_data[@]}"
+                    ;;
+                csv)
+                    format_csv "${sorted_data[@]}"
+                    ;;
+            esac
+            
+            if [ "$PROCESS_THRESHOLD" -gt 0 ]; then
+                echo ""
+                echo "Alert threshold: $PROCESS_THRESHOLD processes"
+            fi
+            
+            sleep "$WATCH_INTERVAL"
+        done
+    else
+        local raw_data=($(collect_data))
+        local sorted_data=($(sort_data "${raw_data[@]}"))
+        
+        local output=""
+        case "$OUTPUT_FORMAT" in
+            table)
+                output=$(format_table "${sorted_data[@]}")
+                ;;
+            json)
+                output=$(format_json "${sorted_data[@]}")
+                ;;
+            csv)
+                output=$(format_csv "${sorted_data[@]}")
+                ;;
+        esac
+        
+        if [ -n "$OUTPUT_FILE" ]; then
+            echo "$output" > "$OUTPUT_FILE"
+            echo "Report saved to: $OUTPUT_FILE"
+        else
+            echo "$output"
+        fi
+    fi
+}
+
+# Run main function
+main "$@"
