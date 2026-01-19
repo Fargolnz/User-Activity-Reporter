@@ -6,6 +6,13 @@ A comprehensive CLI tool for monitoring and reporting user activities on Linux s
 
 **user-activity-reporter** is a command-line tool designed for system administrators to track user activities including login times, online duration, and active process counts. It provides real-time monitoring capabilities and supports multiple export formats.
 
+## Developers
+
+- Seyyedeh Fargol Nazemzadeh
+- Zahra Kamalian
+- Reihaneh Sharifi
+- Fatemeh Mohammadganji
+
 ## Features
 
 - **User Activity Monitoring**: Track last login times, online duration, and process counts
@@ -356,9 +363,6 @@ id username
 
 MIT License - See [LICENSE](LICENSE) file.
 
-## Author
-
-Team Name <team.email@example.com>
 
 ## Contributing
 
