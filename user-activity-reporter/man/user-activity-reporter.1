@@ -1,0 +1,199 @@
+.TH USER-ACTIVITY-REPORTER 1 "January 2026" "user-activity-reporter 1.0.0" "User Commands"
+.SH NAME
+user-activity-reporter \- User Activity Reporter for Linux
+.SH SYNOPSIS
+.B user-activity-reporter
+[\fIOPTIONS\fR]
+.SH DESCRIPTION
+\fBuser-activity-reporter\fR is a comprehensive command-line tool for monitoring and reporting user activities on Linux systems. It provides information about user login times, online duration, and active process counts.
+.PP
+The tool is designed for system administrators who need to track user activity and monitor system resource usage.
+.SH OPTIONS
+.TP
+\fB\-h, \-\-help\fR
+Display help message and exit.
+.TP
+\fB\-v, \-\-version\fR
+Display version information and exit.
+.TP
+\fB\-u, \-\-user\fR \fIUSER\fR
+Show activity for a specific user only.
+.TP
+\fB\-a, \-\-all\fR
+Show all users (default behavior).
+.TP
+\fB\-s, \-\-sort\fR \fIFIELD\fR
+Sort output by specified field. Valid fields are:
+.RS
+.PP
+\fBuser\fR \- Sort by username (default)
+.PP
+\fBlogin\fR \- Sort by last login time
+.PP
+\fBduration\fR \- Sort by online duration
+.PP
+\fBprocesses\fR \- Sort by process count
+.RE
+.TP
+\fB\-r, \-\-reverse\fR
+Reverse the sort order.
+.TP
+\fB\-w, \-\-watch\fR [\fISECONDS\fR]
+Enable real-time monitoring mode. The display refreshes every N seconds (default: 5). Press Ctrl+C to stop.
+.TP
+\fB\-o, \-\-output\fR \fIFILE\fR
+Export the report to the specified file.
+.TP
+\fB\-f, \-\-format\fR \fIFORMAT\fR
+Specify output format. Valid formats are:
+.RS
+.PP
+\fBtable\fR \- Human-readable table format (default)
+.PP
+\fBjson\fR \- JSON format for programmatic processing
+.PP
+\fBcsv\fR \- CSV format for spreadsheet applications
+.RE
+.TP
+\fB\-c, \-\-config\fR \fIFILE\fR
+Use a custom configuration file instead of the default.
+.TP
+\fB\-\-no\-color\fR
+Disable colored output.
+.TP
+\fB\-\-threshold\fR \fIN\fR
+Highlight users with more than N processes (alert threshold).
+.SH EXAMPLES
+Show activity for all users:
+.PP
+.RS
+.nf
+$ user-activity-reporter
+.fi
+.RE
+.PP
+Show activity for a specific user:
+.PP
+.RS
+.nf
+$ user-activity-reporter \-u username
+.fi
+.RE
+.PP
+Enable real-time monitoring with 10-second refresh:
+.PP
+.RS
+.nf
+$ user-activity-reporter \-w 10
+.fi
+.RE
+.PP
+Export report to JSON file:
+.PP
+.RS
+.nf
+$ user-activity-reporter \-o report.json \-f json
+.fi
+.RE
+.PP
+Sort by process count in descending order:
+.PP
+.RS
+.nf
+$ user-activity-reporter \-s processes \-r
+.fi
+.RE
+.PP
+Highlight users with more than 50 processes:
+.PP
+.RS
+.nf
+$ user-activity-reporter \-\-threshold 50
+.fi
+.RE
+.SH OUTPUT FORMATS
+.SS Table Format
+The default table format displays:
+.RS
+.PP
+\fBUSER\fR \- Username
+.PP
+\fBLAST LOGIN\fR \- Last login time
+.PP
+\fBDURATION\fR \- Current session duration (if logged in)
+.PP
+\fBPROCESSES\fR \- Number of active processes
+.RE
+.SS JSON Format
+JSON output includes:
+.RS
+.PP
+\fBtimestamp\fR \- Report generation time
+.PP
+\fBusers\fR \- Array of user objects with:
+.RS
+.IP \(bu 2
+\fBusername\fR
+.IP \(bu 2
+\fBlast_login\fR
+.IP \(bu 2
+\fBduration_seconds\fR
+.IP \(bu 2
+\fBduration_formatted\fR
+.IP \(bu 2
+\fBprocess_count\fR
+.RE
+.RE
+.SS CSV Format
+CSV output includes columns:
+.RS
+.PP
+username, last_login, duration_seconds, duration_formatted, process_count
+.RE
+.SH FILES
+.TP
+\fI/etc/user-activity-reporter/user-activity.conf\fR
+System-wide configuration file.
+.TP
+\fI/usr/share/user-activity-reporter/user-activity-lib.sh\fR
+Shared library functions.
+.TP
+\fI/var/log/user-activity\fR
+Default directory for exported reports (if configured).
+.SH CONFIGURATION
+The configuration file supports the following options:
+.RS
+.PP
+\fBDEFAULT_FORMAT\fR \- Default output format (table, json, csv)
+.PP
+\fBENABLE_COLORS\fR \- Enable colored output (true/false)
+.PP
+\fBDEFAULT_REFRESH_INTERVAL\fR \- Default watch mode refresh interval (seconds)
+.PP
+\fBPROCESS_THRESHOLD\fR \- Default process count threshold
+.PP
+\fBEXCLUDE_USERS\fR \- Comma-separated list of users to exclude
+.PP
+\fBINCLUDE_ONLY\fR \- Comma-separated list of users to include
+.RE
+.SH EXIT STATUS
+.TP
+0
+Success.
+.TP
+1
+Error occurred (invalid arguments, user not found, etc.).
+.SH NOTES
+.PP
+The tool requires read access to system files such as \fI/etc/passwd\fR, \fI/var/log/wtmp\fR, and process information via \fI/proc\fR.
+.PP
+Only regular users (UID >= 1000) are displayed by default. This can be changed in the configuration file.
+.PP
+The tool uses standard Linux commands: \fBwho\fR, \fBlast\fR, \fBps\fR, \fBdate\fR, and \fBgetent\fR.
+.SH AUTHOR
+Team Name <team.email@example.com>
+.SH SEE ALSO
+.BR who (1),
+.BR last (1),
+.BR ps (1),
+.BR w (1)
