@@ -307,7 +307,6 @@ Output will be in the `build/` directory.
 ## Documentation
 
 - **Man Page**: `man user-activity-reporter`
-- **Implementation Plan**: See `plans/user-activity-reporter-implementation-plan.md`
 
 ## Examples
 

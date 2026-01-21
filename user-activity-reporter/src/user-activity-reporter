@@ -77,9 +77,6 @@ FILES:
     ${CONF_PATH}    Configuration file
     ${LIB_PATH}     Shared library functions
 
-AUTHOR:
-    Team Name <team.email@example.com>
-
 EOF
 }
 
@@ -211,22 +208,27 @@ collect_data() {
         fi
 
         # Get last login time
-        local last_login=$(last -n 1 "$user" 2>/dev/null | head -n 1 | awk '{print $3, $4, $5, $6}')
-        local last_login_timestamp=""
-        
-        if [ -n "$last_login" ] && [ "$last_login" != "wtmp" ]; then
-            last_login_timestamp=$(date -d "$last_login" +%s 2>/dev/null || echo "0")
+        local last_login_raw
+        local last_login_formatted="Never"
+        local last_login_timestamp=0
+
+        last_login_raw=$(last -F -n 1 "$user" 2>/dev/null | head -n 1)
+
+        if [[ -n "$last_login_raw" && "$last_login_raw" != *"wtmp"* ]]; then
+            last_login_formatted=$(echo "$last_login_raw" | awk '{print $5" "$6" "$7}')
+            last_login_timestamp=$(date -d "$last_login_formatted" +%s 2>/dev/null || echo 0)
         fi
 
         # Get online duration for currently logged in users
         local duration_seconds=0
         local duration_formatted="N/A"
         
-        if who | grep -q "^$user "; then
-            local login_time=$(who | grep "^$user " | awk '{print $3, $4, $5}')
-            local login_timestamp=$(date -d "$login_time" +%s 2>/dev/null || echo "0")
+        if who | awk '{print $1}' | grep -qx "$user"; then
+            local login_time
+            login_time=$(who | awk -v u="$user" '$1==u {print $3" "$4; exit}')
+            local login_timestamp=$(date -d "$login_time" +%s 2>/dev/null || echo 0)
             duration_seconds=$((current_time - login_timestamp))
-            
+
             if [ "$duration_seconds" -gt 0 ]; then
                 if command -v format_duration &>/dev/null; then
                     duration_formatted=$(format_duration "$duration_seconds")
@@ -246,14 +248,8 @@ collect_data() {
         fi
 
         # Count processes
-        local process_count=$(ps -u "$user" 2>/dev/null | wc -l)
-        process_count=$((process_count - 1))  # Subtract header
-
-        # Format last login
-        local last_login_formatted="Never"
-        if [ -n "$last_login" ] && [ "$last_login" != "wtmp" ]; then
-            last_login_formatted="$last_login"
-        fi
+        local process_count
+        process_count=$(ps -u "$user" -o pid= 2>/dev/null | wc -l)
 
         data+=("$user|$last_login_formatted|$duration_seconds|$duration_formatted|$process_count")
     done
@@ -368,7 +364,7 @@ format_table() {
 # Format output as JSON
 format_json() {
     local data=("$@")
-    local timestamp=$(date -Iseconds)
+    local timestamp=$(date --iso-8601=seconds)
     
     echo "{"
     echo "  \"timestamp\": \"$timestamp\","
@@ -381,6 +377,10 @@ format_json() {
         local duration_seconds=$(echo "$entry" | cut -d'|' -f3)
         local duration_formatted=$(echo "$entry" | cut -d'|' -f4)
         local processes=$(echo "$entry" | cut -d'|' -f5)
+
+        [ -z "$duration_seconds" ] && duration_seconds=0
+        [ -z "$duration_formatted" ] && duration_formatted="N/A"
+        [ -z "$processes" ] && processes=0
 
         if [ "$first" = true ]; then
             first=false
@@ -434,8 +434,9 @@ main() {
             echo "User Activity Report - $(date '+%Y-%m-%d %H:%M:%S')"
             echo ""
             
-            local raw_data=($(collect_data))
-            local sorted_data=($(sort_data "${raw_data[@]}"))
+            IFS=$'\n' read -r -d '' -a raw_data < <(collect_data && printf '\0')
+            IFS=$'\n' read -r -d '' -a sorted_data < <(sort_data "${raw_data[@]}" && printf '\0')
+
             
             case "$OUTPUT_FORMAT" in
                 table)
