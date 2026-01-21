@@ -190,7 +190,7 @@ collect_data() {
     if [ "$SHOW_ALL" = true ]; then
         # Get all users with home directories
         while IFS=: read -r username _ uid _ _ home _; do
-            if [ "$uid" -ge 1000 ] 2>/dev/null && [ -d "$home" ]; then
+            if [ "$uid" -ge 1000 ] 2>/dev/null && [ "$uid" -lt 65534 ] && [ -d "$home" ]; then
                 users+=("$username")
             fi
         done < /etc/passwd
@@ -254,7 +254,7 @@ collect_data() {
         data+=("$user|$last_login_formatted|$duration_seconds|$duration_formatted|$process_count")
     done
 
-    echo "${data[@]}"
+    printf '%\n' "${data[@]}"
 }
 
 # Sort data
