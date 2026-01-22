@@ -54,7 +54,7 @@ sudo apt install build-essential debhelper devscripts
 ./scripts/build-deb.sh
 
 # Install package
-sudo dpkg -i build/deb/user-activity-reporter_1.0.0-1_all.deb
+sudo dpkg -i build/deb/user-activity-reporter_1.0.1_all.deb
 ```
 
 ### Fedora/RHEL
@@ -67,7 +67,7 @@ sudo dnf install rpm-build rpmdevtools
 ./scripts/build-rpm.sh
 
 # Install package
-sudo rpm -i build/rpm/user-activity-reporter-1.0.0-1.noarch.rpm
+sudo rpm -i build/rpm/user-activity-reporter-1.0.1.noarch.rpm
 ```
 
 ### Manual Installation
