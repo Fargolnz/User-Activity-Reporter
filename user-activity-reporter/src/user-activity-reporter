@@ -98,6 +98,10 @@ parse_args() {
                 exit 0
                 ;;
             -u|--user)
+                if [[ -z "$2" || "$2" == -* ]]; then
+                    echo "Error: --user requires a username" >&2
+                    exit 1
+                fi
                 SPECIFIC_USER="$2"
                 SHOW_ALL=false
                 shift 2
@@ -107,6 +111,10 @@ parse_args() {
                 shift
                 ;;
             -s|--sort)
+                if [[ -z "$2" || "$2" == -* ]]; then
+                    echo "Error: --sort requires an argument (user, login, duration, processes)" >&2
+                    exit 1
+                fi
                 SORT_FIELD="$2"
                 shift 2
                 ;;
@@ -124,14 +132,26 @@ parse_args() {
                 fi
                 ;;
             -o|--output)
+                if [[ -z "$2" || "$2" == -* ]]; then
+                    echo "Error: --output requires a file path" >&2
+                    exit 1
+                fi
                 OUTPUT_FILE="$2"
                 shift 2
                 ;;
             -f|--format)
+                if [[ -z "$2" || "$2" == -* ]]; then
+                    echo "Error: --format requires an argument (table, json, csv)" >&2
+                    exit 1
+                fi
                 OUTPUT_FORMAT="$2"
                 shift 2
                 ;;
             -c|--config)
+                if [[ -z "$2" || "$2" == -* ]]; then
+                    echo "Error: --config requires a config file path" >&2
+                    exit 1
+                fi
                 CUSTOM_CONFIG="$2"
                 shift 2
                 ;;
@@ -140,6 +160,10 @@ parse_args() {
                 shift
                 ;;
             --threshold)
+                if [[ -z "$2" || "$2" == -* ]]; then
+                    echo "Error: --threshold requires a numeric value" >&2
+                    exit 1
+                fi
                 PROCESS_THRESHOLD="$2"
                 shift 2
                 ;;

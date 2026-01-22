@@ -1,9 +1,9 @@
 Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: user-activity-reporter
-Source: https://github.com/example/user-activity-reporter
+Source: https://github.com/fargolnz/user-activity-reporter
 
 Files: *
-Copyright: 2026 Team Name
+Copyright: 2026 Soltan and Moridan Team
 License: MIT
 
 License: MIT

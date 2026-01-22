@@ -57,7 +57,7 @@ install -m 644 man/user-activity-reporter.1 %{buildroot}%{_mandir}/man1/user-act
 %{_mandir}/man1/user-activity-reporter.1*
 
 %changelog
-* Sun Jan 19 2026 Team Name <team.email@example.com> - 1.0.0-1
+* Sun Jan 19 2026 Soltan and Moridan Team <fargol.nz@gmail.com> - 1.0.0-1
 - Initial release
 - Added user activity monitoring with login times
 - Added online duration tracking
