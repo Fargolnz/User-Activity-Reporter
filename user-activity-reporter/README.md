@@ -1,4 +1,4 @@
-# user-activity-reporter
+# User Activity Reporter
 
 A comprehensive CLI tool for monitoring and reporting user activities on Linux systems.
 
@@ -38,8 +38,11 @@ user-activity-reporter/
 ├── rpm/                          # RPM packaging files
 ├── scripts/                      # Build scripts
 ├── Makefile                      # Build automation
-├── README.md                     # This file
-└── LICENSE                       # MIT License
+├── LICENSE                       # MIT License
+├── GUIDE.md                      # Installation guide
+├── PACKAGING.md                  # Packaging info
+├── REPORT.md                     # Project report
+└── README.md                     # This file
 ```
 
 ## Installation
@@ -370,5 +373,5 @@ This project was developed as a final project for the Operating Systems Lab cour
 ## Acknowledgments
 
 - University of Tehran - Faculty of Farabi
-- Operating Systems Lab - Semester 7
+- Operating Systems Lab
 - Academic Year 1404-1405

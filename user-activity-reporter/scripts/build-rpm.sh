@@ -32,9 +32,9 @@ build_with_rpmbuild() {
 
     cd "$BUILD_DIR"
     tar czf "$RPMBUILD_DIR/SOURCES/${PACKAGE_NAME}-${VERSION}.tar.gz" "${PACKAGE_NAME}-${VERSION}"
-    cp "$PROJECT_DIR/rpm/hello-world.spec" "$RPMBUILD_DIR/SPECS/"
+    cp "$PROJECT_DIR/rpm/user-activity-reporter.spec" "$RPMBUILD_DIR/SPECS/"
 
-    rpmbuild --define "_topdir $RPMBUILD_DIR" -bb "$RPMBUILD_DIR/SPECS/hello-world.spec"
+    rpmbuild --define "_topdir $RPMBUILD_DIR" -bb "$RPMBUILD_DIR/SPECS/user-activity-reporter.spec"
     cp "$RPMBUILD_DIR/RPMS"/*/*.rpm "$BUILD_DIR/" 2>/dev/null || true
 
     echo ""
@@ -47,43 +47,40 @@ build_with_fpm() {
 
     STAGING="$BUILD_DIR/staging"
     mkdir -p "$STAGING/usr/bin"
-    mkdir -p "$STAGING/usr/share/hello-world"
+    mkdir -p "$STAGING/usr/share/user-activity-reporter"
     mkdir -p "$STAGING/usr/share/man/man1"
-    mkdir -p "$STAGING/usr/share/doc/hello-world"
-    mkdir -p "$STAGING/etc/hello-world"
+    mkdir -p "$STAGING/usr/share/doc/user-activity-reporter"
+    mkdir -p "$STAGING/etc/user-activity-reporter"
 
     # Executables (755)
-    cp "$PROJECT_DIR/src/hello-world" "$STAGING/usr/bin/"
-    cp "$PROJECT_DIR/src/hello-info" "$STAGING/usr/bin/"
-    chmod 755 "$STAGING/usr/bin/hello-world"
-    chmod 755 "$STAGING/usr/bin/hello-info"
+    cp "$PROJECT_DIR/src/user-activity-reporter" "$STAGING/usr/bin/"
+    chmod 755 "$STAGING/usr/bin/user-activity-reporter"
 
     # Library (644)
-    cp "$PROJECT_DIR/src/hello-lib.sh" "$STAGING/usr/share/hello-world/"
-    chmod 644 "$STAGING/usr/share/hello-world/hello-lib.sh"
+    cp "$PROJECT_DIR/src/user-activity-lib.sh" "$STAGING/usr/share/user-activity-reporter/"
+    chmod 644 "$STAGING/usr/share/user-activity-reporter/user-activity-lib.sh"
 
     # Config (644)
-    cp "$PROJECT_DIR/src/hello.conf" "$STAGING/etc/hello-world/"
-    chmod 644 "$STAGING/etc/hello-world/hello.conf"
+    cp "$PROJECT_DIR/src/user-activity.conf" "$STAGING/etc/user-activity-reporter/"
+    chmod 644 "$STAGING/etc/user-activity-reporter/user-activity.conf"
 
     # Man pages
-    cp "$PROJECT_DIR/man/hello-world.1" "$STAGING/usr/share/man/man1/"
-    cp "$PROJECT_DIR/man/hello-info.1" "$STAGING/usr/share/man/man1/"
+    cp "$PROJECT_DIR/man/user-activity-reporter.1" "$STAGING/usr/share/man/man1/"
     gzip -f "$STAGING/usr/share/man/man1/"*.1
 
     # Docs
-    cp "$PROJECT_DIR/README.md" "$STAGING/usr/share/doc/hello-world/"
-    cp "$PROJECT_DIR/LICENSE" "$STAGING/usr/share/doc/hello-world/"
+    cp "$PROJECT_DIR/README.md" "$STAGING/usr/share/doc/user-activity-reporter/"
+    cp "$PROJECT_DIR/LICENSE" "$STAGING/usr/share/doc/user-activity-reporter/"
 
     cd "$BUILD_DIR"
     fpm -s dir -t rpm \
         -n "$PACKAGE_NAME" \
         -v "$VERSION" \
-        --description "Hello world package with multiple commands" \
+        --description "User Activity Reporter for Linux" \
         --license "MIT" \
         --architecture noarch \
         --depends bash \
-        --config-files /etc/hello-world/hello.conf \
+        --config-files /etc/user-activity-reporter/user-activity.conf \
         -C "$STAGING" \
         .
 

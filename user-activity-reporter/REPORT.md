@@ -48,18 +48,31 @@
 
 ```
 user-activity-reporter/
-├── src/                    # فایل‌های اجرایی و کتابخانه
-│   ├── user-activity-reporter    # ابزار اصلی
-│   ├── user-activity-lib.sh      # کتابخانه مشترک
-│   └── user-activity.conf        # فایل تنظیمات
-├── man/                    # صفحات راهنما
-│   └── user-activity-reporter.1
-├── debian/                 # فایل‌های بسته‌بندی دبیان
-├── rpm/                    # فایل‌های بسته‌بندی RPM
-├── scripts/                # اسکریپت‌های ساخت
-├── Makefile                # اسکریپت‌های ساخت
-├── README.md               # مستندات
-└── LICENSE                 # مجوز
+├── src/                          # فایل‌های منبع
+│   ├── user-activity-reporter    # برنامه اصلی (اجرایی)
+│   ├── user-activity-lib.sh      # کتابخانه مشترک (غیر اجرایی)
+│   └── user-activity.conf        # فایل پیکربندی (غیر اجرایی)
+├── man/                          # صفحات راهنما
+│   ├── user-activity-reporter.1  # man برای user-activity-reporter
+├── debian/                       # بسته‌بندی Debian
+│   ├── control                   # اطلاعات بسته
+│   ├── changelog                 # تاریخچه تغییرات
+│   ├── rules                     # قوانین ساخت
+│   ├── copyright                 # مجوز
+│   ├── install                   # فهرست نصب
+│   └── source/format
+├── rpm/                          # بسته‌بندی RPM
+│   └── user-activity-reporter.spec # فایل spec
+├── scripts/                      # اسکریپت‌های ساخت
+│   ├── build-deb.sh
+│   ├── build-rpm.sh
+│   └── build-all.sh
+├── Makefile                      # اسکریپت‌های ساخت
+├── LICENSE                       # مجوز
+├── GUIDE.md                      # راهنمای نصب
+├── PACKAGING.md                  # راهنمای پکیج‌ها
+├── REPORT.md                     # گزارش پروژه
+└── README.md                     # مستندات
 ```
 
 ## ۵. نحوه نصب و استفاده
@@ -68,14 +81,14 @@ user-activity-reporter/
 ```bash
 sudo apt install build-essential debhelper devscripts
 ./scripts/build-deb.sh
-sudo dpkg -i build/deb/user-activity-reporter_1.0.0-1_all.deb
+sudo dpkg -i build/deb/user-activity-reporter_1.0.1_all.deb
 ```
 
 #### برای سیستم‌های RPM (فدورا/رزل):
 ```bash
 sudo dnf install rpm-build rpmdevtools
 ./scripts/build-rpm.sh
-sudo rpm -i build/rpm/user-activity-reporter-1.0.0-1.noarch.rpm
+sudo rpm -i build/rpm/user-activity-reporter-1.0.1.noarch.rpm
 ```
 
 ### ۵.۲. استفاده

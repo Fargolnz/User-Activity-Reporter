@@ -91,29 +91,29 @@ mypackage/
 
 ### قدم ۲: برنامه اجرایی اصلی
 
-فایل `src/hello-world`:
+فایل `src/user-activity-reporter`:
 ```bash
 #!/bin/bash
-# hello-world - برنامه اصلی
+# user-activity-reporter - برنامه اصلی
 
 VERSION="1.0.1"
 
 # بارگذاری کتابخانه مشترک
-LIB_PATH="/usr/share/hello-world/hello-lib.sh"
+LIB_PATH="/usr/share/user-activity-reporter/user-activity-lib.sh"
 [ -f "$LIB_PATH" ] && source "$LIB_PATH"
 
 # بارگذاری تنظیمات
-CONF_PATH="/etc/hello-world/hello.conf"
+CONF_PATH="/etc/user-activity-reporter/user-activity.conf"
 [ -f "$CONF_PATH" ] && source "$CONF_PATH"
 
 case "${1:-}" in
     -h|--help)
-        echo "Usage: hello-world [OPTIONS]"
+        echo "Usage: user-activity-reporter [OPTIONS]"
         echo "  -h, --help      Show help"
         echo "  -v, --version   Show version"
         ;;
     -v|--version)
-        echo "hello-world version $VERSION"
+        echo "user-activity-reporter version $VERSION"
         ;;
     *)
         echo "${GREETING:-Hello}, ${NAME:-World}!"
@@ -121,42 +121,12 @@ case "${1:-}" in
 esac
 ```
 
-### قدم ۳: برنامه اجرایی دوم
+### قدم ۳: کتابخانه مشترک
 
-فایل `src/hello-info`:
+فایل `src/user-activity-lib.sh`:
 ```bash
 #!/bin/bash
-# hello-info - نمایش اطلاعات سیستم
-
-VERSION="1.0.1"
-
-# بارگذاری کتابخانه
-LIB_PATH="/usr/share/hello-world/hello-lib.sh"
-[ -f "$LIB_PATH" ] && source "$LIB_PATH"
-
-case "${1:-}" in
-    -h|--help)
-        echo "Usage: hello-info [OPTIONS]"
-        echo "  -h, --help    Show help"
-        echo "  -s, --short   Short output"
-        ;;
-    -s|--short)
-        echo "$(uname -n) | $(uname -r)"
-        ;;
-    *)
-        print_header "System Info"
-        echo "Hostname: $(uname -n)"
-        echo "Kernel:   $(uname -r)"
-        ;;
-esac
-```
-
-### قدم ۴: کتابخانه مشترک
-
-فایل `src/hello-lib.sh`:
-```bash
-#!/bin/bash
-# hello-lib.sh - توابع مشترک
+# user-activity-lib.sh - توابع مشترک
 # این فایل source می‌شود، مستقیم اجرا نمی‌شود
 
 print_header() {
@@ -167,11 +137,11 @@ print_header() {
 
 **نکته مهم**: این فایل با `source` بارگذاری می‌شود، پس نیاز به مجوز اجرا ندارد.
 
-### قدم ۵: فایل پیکربندی
+### قدم ۴: فایل پیکربندی
 
-فایل `src/hello.conf`:
+فایل `src/user-activity.conf`:
 ```bash
-# تنظیمات hello-world
+# تنظیمات user-activity-reporter
 GREETING="Hello"
 NAME="World"
 ```
@@ -180,68 +150,61 @@ NAME="World"
 
 ```bash
 # فایل‌های اجرایی: 755
-chmod 755 src/hello-world
-chmod 755 src/hello-info
+chmod 755 src/user-activity-reporter
 
 # فایل‌های غیر اجرایی: 644
-chmod 644 src/hello-lib.sh
-chmod 644 src/hello.conf
+chmod 644 src/user-activity-lib.sh
+chmod 644 src/user-activity.conf
 ```
 
 ---
 
 ## ساخت صفحات Man
 
-### قدم ۶: صفحه Man برای hello-world
+### قدم ۵: صفحه Man برای user-activity-reporter
 
-فایل `man/hello-world.1`:
+فایل `man/user-activity-reporter.1`:
 ```troff
-.TH HELLO-WORLD 1 "December 2025" "1.0.0" "User Commands"
+.TH USER-ACTIVITY-REPORTER 1 "January 2026" "user-activity-reporter 1.0.1" "User Commands"
 .SH NAME
-hello-world \- print a greeting message
+user-activity-reporter \- User Activity Reporter for Linux
 .SH SYNOPSIS
-.B hello-world
-[\fIOPTION\fR]
+.B user-activity-reporter
+[\fIOPTIONS\fR]
 .SH DESCRIPTION
-.B hello-world
-prints a customizable greeting message.
+\fBuser-activity-reporter\fR is a comprehensive command-line tool for monitoring and reporting user activities on Linux systems. It provides information about user login times, online duration, and active process counts.
+.PP
+The tool is designed for system administrators who need to track user activity and monitor system resource usage.
 .SH OPTIONS
 .TP
-.BR \-h ", " \-\-help
-Display help message.
+\fB\-h, \-\-help\fR
+Display help message and exit.
 .TP
-.BR \-v ", " \-\-version
-Display version.
-.SH FILES
+\fB\-v, \-\-version\fR
+Display version information and exit.
 .TP
-.I /etc/hello-world/hello.conf
-Configuration file.
-.SH SEE ALSO
-.BR hello-info (1)
-```
-
-### قدم ۷: صفحه Man برای hello-info
-
-فایل `man/hello-info.1`:
-```troff
-.TH HELLO-INFO 1 "December 2025" "1.0.0" "User Commands"
-.SH NAME
-hello-info \- display system information
-.SH SYNOPSIS
-.B hello-info
-[\fIOPTION\fR]
-.SH DESCRIPTION
-.B hello-info
-displays basic system information.
-.SH OPTIONS
+\fB\-u, \-\-user\fR \fIUSER\fR
+Show activity for a specific user only.
 .TP
-.BR \-h ", " \-\-help
-Display help.
+\fB\-a, \-\-all\fR
+Show all users (default behavior).
 .TP
-.BR \-s ", " \-\-short
-Short output.
-.SH SEE ALSO
-.BR hello-world (1)
+\fB\-s, \-\-sort\fR \fIFIELD\fR
+Sort output by specified field. Valid fields are:
+.RS
+.PP
+\fBuser\fR \- Sort by username (default)
+.PP
+\fBlogin\fR \- Sort by last login time
+.PP
+\fBduration\fR \- Sort by online duration
+.PP
+\fBprocesses\fR \- Sort by process count
+.RE
+.TP
+\fB\-r, \-\-reverse\fR
+Reverse the sort order.
+...
 ```
 
 ### دستورات فرمت Man
@@ -251,7 +214,7 @@ Short output.
 | `.TH` | عنوان | `.TH NAME 1 "Date" "Version"` |
 | `.SH` | سرفصل | `.SH OPTIONS` |
 | `.TP` | پاراگراف | قبل از هر آپشن |
-| `.B` | بولد | `.B hello-world` |
+| `.B` | بولد | `.B user-activity-reporter` |
 | `.I` | ایتالیک | `.I /path/to/file` |
 | `.BR` | بولد+معمولی | `.BR \-h ", " \-\-help` |
 
@@ -259,12 +222,12 @@ Short output.
 
 ## نوشتن Makefile
 
-### قدم ۸: ساخت Makefile
+### قدم ۶: ساخت Makefile
 
 ```makefile
-# Makefile for hello-world package
+# Makefile for user-activity-reporter package
 
-PACKAGE_NAME = hello-world
+PACKAGE_NAME = user-activity-reporter
 VERSION = 1.0.1
 
 # مسیرهای نصب (قابل تغییر)
@@ -288,26 +251,22 @@ install:
 	install -d $(DESTDIR)$(MANDIR)
 
 	# نصب فایل‌های اجرایی (755)
-	install -m 755 src/hello-world $(DESTDIR)$(BINDIR)/
-	install -m 755 src/hello-info $(DESTDIR)$(BINDIR)/
+	install -m 755 src/user-activity-reporter $(DESTDIR)$(BINDIR)/
 
 	# نصب کتابخانه (644)
-	install -m 644 src/hello-lib.sh $(DESTDIR)$(DATADIR)/
+	install -m 644 src/user-activity-lib.sh $(DESTDIR)$(DATADIR)/
 
 	# نصب پیکربندی (644)
-	install -m 644 src/hello.conf $(DESTDIR)$(CONFDIR)/
+	install -m 644 src/user-activity.conf $(DESTDIR)$(CONFDIR)/
 
 	# نصب صفحات man (644)
-	install -m 644 man/hello-world.1 $(DESTDIR)$(MANDIR)/
-	install -m 644 man/hello-info.1 $(DESTDIR)$(MANDIR)/
+	install -m 644 man/user-activity-reporter.1 $(DESTDIR)$(MANDIR)/
 
 uninstall:
-	rm -f $(DESTDIR)$(BINDIR)/hello-world
-	rm -f $(DESTDIR)$(BINDIR)/hello-info
+	rm -f $(DESTDIR)$(BINDIR)/user-activity-reporter
 	rm -rf $(DESTDIR)$(DATADIR)
 	rm -rf $(DESTDIR)$(CONFDIR)
-	rm -f $(DESTDIR)$(MANDIR)/hello-world.1*
-	rm -f $(DESTDIR)$(MANDIR)/hello-info.1*
+	rm -f $(DESTDIR)$(MANDIR)/user-activity-reporter.1*
 
 clean:
 	rm -rf build/
@@ -333,24 +292,23 @@ install -m 644 SRC DST  # کپی با مجوز 644
 
 ## بسته‌بندی Debian
 
-### قدم ۹: فایل control
+### قدم ۷: فایل control
 
 فایل `debian/control`:
 ```
-Source: hello-world
+Source: user-activity-reporter
 Section: utils
 Priority: optional
-Maintainer: Your Name <email@example.com>
+Maintainer: Seyyedeh Fargol Nazemzadeh <fargol.nz@gmail.com>
 Build-Depends: debhelper-compat (= 13)
 Standards-Version: 4.6.0
 Rules-Requires-Root: no
 
-Package: hello-world
+Package: user-activity-reporter
 Architecture: all
 Depends: ${misc:Depends}, bash
-Description: A hello world package
- This package provides hello-world and hello-info commands.
- It demonstrates Linux packaging concepts.
+Description: User Activity Reporter for Linux
+ A comprehensive CLI tool for monitoring and reporting user activities including login times, online duration, and process counts.
 ```
 
 ### فیلدهای مهم
@@ -363,24 +321,23 @@ Description: A hello world package
 | `Depends` | وابستگی‌های اجرا |
 | `Build-Depends` | وابستگی‌های ساخت |
 
-### قدم ۱۰: فایل changelog
+### قدم ۸: فایل changelog
 
 فایل `debian/changelog`:
 ```
-hello-world (1.0.0-1) unstable; urgency=low
+user-activity-reporter (1.0.0-1) unstable; urgency=low
 
   * Initial release
-  * Added hello-world command
-  * Added hello-info command
+  * Added user-activity-reporter command
 
- -- Your Name <email@example.com>  Wed, 11 Dec 2025 12:00:00 +0000
+ -- Soltan and Moridan Team <fargol.nz@gmail.com>  Wed, 11 Dec 2025 12:00:00 +0000
 ```
 
 **فرمت نسخه**: `VERSION-REVISION`
-- `1.0.0` = نسخه upstream
+- `1.0.1` = نسخه upstream
 - `1` = شماره revision دبیان
 
-### قدم ۱۱: فایل rules
+### قدم ۹: فایل rules
 
 فایل `debian/rules`:
 ```makefile
@@ -392,7 +349,7 @@ export DH_VERBOSE = 1
 	dh $@
 
 override_dh_auto_install:
-	$(MAKE) install DESTDIR=$(CURDIR)/debian/hello-world PREFIX=/usr
+	$(MAKE) install DESTDIR=$(CURDIR)/debian/user-activity-reporter PREFIX=/usr
 ```
 
 **مهم**: این فایل باید اجرایی باشد:
@@ -400,39 +357,37 @@ override_dh_auto_install:
 chmod +x debian/rules
 ```
 
-### قدم ۱۲: فایل install
+### قدم ۱۰: فایل install
 
 فایل `debian/install`:
 ```
-src/hello-world usr/bin
-src/hello-info usr/bin
-src/hello-lib.sh usr/share/hello-world
-src/hello.conf etc/hello-world
-man/hello-world.1 usr/share/man/man1
-man/hello-info.1 usr/share/man/man1
+src/user-activity-reporter usr/bin
+src/user-activity.sh usr/share/user-activity-reporter
+src/user-activity.conf etc/user-activity-reporter
+man/user-activity-reporter.1 usr/share/man/man1
 ```
 
 **فرمت**: `SOURCE DESTINATION`
 - بدون `/` در ابتدای مقصد
 - مسیر نسبی به ریشه بسته
 
-### قدم ۱۳: فایل copyright
+### قدم ۱۱: فایل copyright
 
 فایل `debian/copyright`:
 ```
 Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
-Upstream-Name: hello-world
-Source: https://github.com/example/hello-world
+Upstream-Name: user-activity-reporter
+Source: https://github.com/fargolnz/user-activity-reporter
 
 Files: *
-Copyright: 2025 Your Name
+Copyright: 2025 Seyyedeh Fargol Nazemzadeh
 License: MIT
 
 License: MIT
  Permission is hereby granted...
 ```
 
-### قدم ۱۴: فایل source/format
+### قدم ۱۲: فایل source/format
 
 فایل `debian/source/format`:
 ```
@@ -447,7 +402,7 @@ License: MIT
 
 ## بسته‌بندی RPM
 
-### قدم ۱۵: فایل Spec
+### قدم ۱۳: فایل Spec
 
 فایل `rpm/user-activity-reporter.spec`:
 ```spec
@@ -464,8 +419,8 @@ BuildArch:      noarch
 Requires:       bash
 
 %description
-This package provides information about users and their activities.
-It demonstrates Linux packaging concepts.
+A comprehensive CLI tool for monitoring and reporting user activities
+including login times, online duration, and process counts.
 
 %prep
 %setup -q
@@ -476,34 +431,30 @@ It demonstrates Linux packaging concepts.
 %install
 # Executables
 mkdir -p %{buildroot}%{_bindir}
-install -m 755 src/hello-world %{buildroot}%{_bindir}/
-install -m 755 src/hello-info %{buildroot}%{_bindir}/
+install -m 755 src/user-activity-reporter %{buildroot}%{_bindir}/
 
 # Library
-mkdir -p %{buildroot}%{_datadir}/hello-world
-install -m 644 src/hello-lib.sh %{buildroot}%{_datadir}/hello-world/
+mkdir -p %{buildroot}%{_datadir}/user-activity-reporter
+install -m 644 src/user-activity-lib.sh %{buildroot}%{_datadir}/user-activity-reporter/
 
 # Config
-mkdir -p %{buildroot}%{_sysconfdir}/hello-world
-install -m 644 src/hello.conf %{buildroot}%{_sysconfdir}/hello-world/
+mkdir -p %{buildroot}%{_sysconfdir}/user-activity-reporter
+install -m 644 src/user-activity.conf %{buildroot}%{_sysconfdir}/user-activity-reporter/
 
 # Man pages
 mkdir -p %{buildroot}%{_mandir}/man1
-install -m 644 man/hello-world.1 %{buildroot}%{_mandir}/man1/
-install -m 644 man/hello-info.1 %{buildroot}%{_mandir}/man1/
+install -m 644 man/user-activity-reporter.1 %{buildroot}%{_mandir}/man1/
 
 %files
 %license LICENSE
 %doc README.md
-%{_bindir}/hello-world
-%{_bindir}/hello-info
-%{_datadir}/hello-world/hello-lib.sh
-%config(noreplace) %{_sysconfdir}/hello-world/hello.conf
-%{_mandir}/man1/hello-world.1*
-%{_mandir}/man1/hello-info.1*
+%{_bindir}/user-activity-reporter
+%{_datadir}/user-activity-reporter/user-activity-lib.sh
+%config(noreplace) %{_sysconfdir}/user-activity-reporter/user-activity.conf
+%{_mandir}/man1/user-activity-reporter.1*
 
 %changelog
-* Wed Dec 11 2025 Your Name <email@example.com> - 1.0.0-1
+* Sun, 19 Jan 2026 Soltan and Moridan Team <fargol.nz@gmail.com> - 1.0.0-1
 - Initial release
 ```
 
@@ -540,7 +491,7 @@ install -m 644 man/hello-info.1 %{buildroot}%{_mandir}/man1/
 
 ## ساخت و نصب
 
-### قدم ۱۶: اسکریپت ساخت Debian
+### قدم ۱۴: اسکریپت ساخت Debian
 
 فایل `scripts/build-deb.sh`:
 ```bash
@@ -577,7 +528,7 @@ echo "=== Done ==="
 ls -la "$BUILD_DIR"/*.deb
 ```
 
-### قدم ۱۷: اسکریپت ساخت RPM
+### قدم ۱۵: اسکریپت ساخت RPM
 
 فایل `scripts/build-rpm.sh`:
 ```bash
@@ -612,10 +563,10 @@ cd "$BUILD_DIR"
 tar czf "$RPMBUILD_DIR/SOURCES/${PACKAGE_NAME}-${VERSION}.tar.gz" \
     "${PACKAGE_NAME}-${VERSION}"
 
-cp "$PROJECT_DIR/rpm/hello-world.spec" "$RPMBUILD_DIR/SPECS/"
+cp "$PROJECT_DIR/rpm/user-activity-reporter.spec" "$RPMBUILD_DIR/SPECS/"
 
 rpmbuild --define "_topdir $RPMBUILD_DIR" \
-    -bb "$RPMBUILD_DIR/SPECS/hello-world.spec"
+    -bb "$RPMBUILD_DIR/SPECS/user-activity-reporter.spec"
 
 cp "$RPMBUILD_DIR/RPMS"/*/*.rpm "$BUILD_DIR/"
 
@@ -623,7 +574,7 @@ echo "=== Done ==="
 ls -la "$BUILD_DIR"/*.rpm
 ```
 
-### قدم ۱۸: اجرای ساخت
+### قدم ۱۶: اجرای ساخت
 
 ```bash
 # اجرایی کردن اسکریپت‌ها
@@ -636,39 +587,35 @@ chmod +x scripts/*.sh
 ./scripts/build-rpm.sh
 ```
 
-### قدم ۱۹: نصب بسته
+### قدم ۱۷: نصب بسته
 
 ```bash
 # Debian/Ubuntu
-sudo dpkg -i build/deb/hello-world_1.0.0-1_all.deb
+sudo dpkg -i build/deb/user-activity-reporter_1.0.1_all.deb
 
 # Fedora/RHEL
-sudo rpm -i build/rpm/hello-world-1.0.0-1.noarch.rpm
+sudo rpm -i build/rpm/user-activity-reporter-1.0.1.noarch.rpm
 ```
 
-### قدم ۲۰: تست
+### قدم ۱۸: تست
 
 ```bash
 # تست برنامه
-hello-world
-hello-world --version
-
-hello-info
-hello-info --short
+user-activity-reporter
+user-activity-reporter --version
 
 # مشاهده man
-man hello-world
-man hello-info
+man user-activity-reporter
 ```
 
 ### حذف بسته
 
 ```bash
 # Debian
-sudo dpkg -r hello-world
+sudo dpkg -r user-activity-reporter
 
 # Fedora
-sudo rpm -e hello-world
+sudo rpm -e user-activity-reporter
 ```
 
 ---
@@ -685,17 +632,17 @@ sudo gem install fpm
 
 # ساخت RPM
 fpm -s dir -t rpm \
-    -n hello-world \
+    -n user-activity-reporter \
     -v 1.0.0 \
-    --description "Hello world package" \
+    --description "User Activity Reporter for Linux" \
     --depends bash \
-    --config-files /etc/hello-world/hello.conf \
+    --config-files /etc/user-activity-reporter/user-activity.conf \
     usr/=/usr/ \
     etc/=/etc/
 
 # ساخت DEB
 fpm -s dir -t deb \
-    -n hello-world \
+    -n user-activity-reporter \
     -v 1.0.0 \
     usr/=/usr/ \
     etc/=/etc/
@@ -747,12 +694,12 @@ Requires: coreutils >= 8.0
 
 #### Debian
 ```
-Package: hello-world
+Package: user-activity-reporter
 Architecture: all
 Depends: bash
 Description: Main package
 
-Package: hello-world-doc
+Package: user-activity-reporter-doc
 Architecture: all
 Description: Documentation
 ```
@@ -762,7 +709,7 @@ Description: Documentation
 %package doc
 Summary: Documentation
 %description doc
-Documentation for hello-world
+Documentation for user-activity-reporter
 
 %files doc
 %doc README.md

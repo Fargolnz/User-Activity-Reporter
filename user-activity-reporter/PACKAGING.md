@@ -7,15 +7,13 @@
 ## ساختار پروژه
 
 ```
-oslab-packaging/
+user-activity-reporter/
 ├── src/                          # فایل‌های منبع
-│   ├── hello-world               # برنامه اصلی (اجرایی)
-│   ├── hello-info                # برنامه دوم (اجرایی)
-│   ├── hello-lib.sh              # کتابخانه مشترک (غیر اجرایی)
-│   └── hello.conf                # فایل پیکربندی (غیر اجرایی)
+│   ├── user-activity-reporter    # برنامه اصلی (اجرایی)
+│   ├── user-activity-lib.sh      # کتابخانه مشترک (غیر اجرایی)
+│   └── user-activity.conf        # فایل پیکربندی (غیر اجرایی)
 ├── man/                          # صفحات راهنما
-│   ├── hello-world.1             # man برای hello-world
-│   └── hello-info.1              # man برای hello-info
+│   ├── user-activity-reporter.1  # man برای user-activity-reporter
 ├── debian/                       # بسته‌بندی Debian
 │   ├── control                   # اطلاعات بسته
 │   ├── changelog                 # تاریخچه تغییرات
@@ -24,13 +22,16 @@ oslab-packaging/
 │   ├── install                   # فهرست نصب
 │   └── source/format
 ├── rpm/                          # بسته‌بندی RPM
-│   └── hello-world.spec          # فایل spec
+│   └── user-activity-reporter.spec # فایل spec
 ├── scripts/                      # اسکریپت‌های ساخت
 │   ├── build-deb.sh
 │   ├── build-rpm.sh
 │   └── build-all.sh
 ├── Makefile
 ├── LICENSE
+├── GUIDE.md
+├── PACKAGING.md
+├── REPORT.md
 └── README.md
 ```
 
@@ -41,30 +42,30 @@ oslab-packaging/
 ### فایل‌های اجرایی (Executables)
 - **مجوز**: `755` (rwxr-xr-x)
 - **محل نصب**: `/usr/bin/`
-- **مثال**: `hello-world`, `hello-info`
+- **مثال**: `user-activity-reporter`
 
 ```bash
-install -m 755 src/hello-world /usr/bin/hello-world
+install -m 755 src/user-activity-reporter/usr/bin/user-activity-reporter
 ```
 
 ### فایل‌های کتابخانه (Libraries)
 - **مجوز**: `644` (rw-r--r--)
-- **محل نصب**: `/usr/share/PACKAGE_NAME/`
-- **مثال**: `hello-lib.sh`
+- **محل نصب**: `/usr/share/user-activity-reporter/`
+- **مثال**: `user-activity-lib.sh`
 
 این فایل‌ها توسط برنامه‌های دیگر `source` می‌شوند ولی مستقیماً اجرا نمی‌شوند.
 
 ```bash
-install -m 644 src/hello-lib.sh /usr/share/hello-world/
+install -m 644 src/user-activity-lib.sh /usr/share/user-activity-reporter/
 ```
 
 ### فایل‌های پیکربندی (Config)
 - **مجوز**: `644` (rw-r--r--)
-- **محل نصب**: `/etc/PACKAGE_NAME/`
-- **مثال**: `hello.conf`
+- **محل نصب**: `/etc/user-activity-reporter/`
+- **مثال**: `user-activity.conf`
 
 ```bash
-install -m 644 src/hello.conf /etc/hello-world/
+install -m 644 src/user-activity.conf /etc/user-activity-reporter/
 ```
 
 ### صفحات Man
@@ -79,16 +80,16 @@ install -m 644 src/hello.conf /etc/hello-world/
 ### فایل `debian/control`
 
 ```
-Source: hello-world
+Source: user-activity-reporter
 Section: utils
 Priority: optional
-Maintainer: نام <ایمیل>
+Maintainer: Seyyedeh Fargol Nazemzadeh <fargol.nz@gmail.com>
 Build-Depends: debhelper-compat (= 13)
 
-Package: hello-world
+Package: user-activity-reporter
 Architecture: all
 Depends: ${misc:Depends}, bash
-Description: توضیحات بسته
+Description: User Activity Reporter for Linux
 ```
 
 **فیلدهای مهم:**
@@ -100,12 +101,10 @@ Description: توضیحات بسته
 این فایل مشخص می‌کند هر فایل کجا نصب شود:
 
 ```
-src/hello-world usr/bin
-src/hello-info usr/bin
-src/hello-lib.sh usr/share/hello-world
-src/hello.conf etc/hello-world
-man/hello-world.1 usr/share/man/man1
-man/hello-info.1 usr/share/man/man1
+src/user-activity-reporter usr/bin
+src/user-activity-lib.sh usr/share/user-activity-reporter
+src/user-activity.conf etc/user-activity-reporter
+man/user-activity-reporter.1 usr/share/man/man1
 ```
 
 ### فایل `debian/rules`
@@ -117,8 +116,7 @@ man/hello-info.1 usr/share/man/man1
 
 override_dh_fixperms:
     dh_fixperms
-    chmod 755 debian/hello-world/usr/bin/hello-world
-    chmod 755 debian/hello-world/usr/bin/hello-info
+    chmod 755 debian/user-activity-reporter/usr/bin/user-activity-reporter
 ```
 
 ### ساخت بسته Debian
@@ -143,19 +141,17 @@ Requires:       bash
 %install
 # فایل‌های اجرایی
 install -m 755 src/user-activity-reporter %{buildroot}%{_bindir}/
-install -m 755 src/user-activity-reporter-info %{buildroot}%{_bindir}/
 
 # کتابخانه
-install -m 644 src/user-activity-lib.sh %{buildroot}%{_datadir}/hello-world/
+install -m 644 src/user-activity-lib.sh %{buildroot}%{_datadir}/user-activity-reporter/
 
 # پیکربندی
-install -m 644 src/user-activity.conf %{buildroot}%{_sysconfdir}/hello-world/
+install -m 644 src/user-activity.conf %{buildroot}%{_sysconfdir}/user-activity-reporter/
 
 %files
-%{_bindir}/hello-world
-%{_bindir}/hello-info
-%{_datadir}/hello-world/hello-lib.sh
-%config(noreplace) %{_sysconfdir}/hello-world/hello.conf
+%{_bindir}/user-activity-reporter
+%{_datadir}/user-activity-reporter/user-activity-lib.sh
+%config(noreplace) %{_sysconfdir}/user-activity-reporter/user-activity.conf
 ```
 
 ### متغیرهای RPM
@@ -183,14 +179,13 @@ CONFDIR ?= /etc/$(PACKAGE_NAME)
 
 install:
     # اجرایی‌ها (755)
-    install -m 755 src/hello-world $(DESTDIR)$(BINDIR)/
-    install -m 755 src/hello-info $(DESTDIR)$(BINDIR)/
+    install -m 755 src/user-activity-reporter $(DESTDIR)$(BINDIR)/
 
     # کتابخانه (644)
-    install -m 644 src/hello-lib.sh $(DESTDIR)$(DATADIR)/
+    install -m 644 src/user-activity-lib.sh $(DESTDIR)$(DATADIR)/
 
     # پیکربندی (644)
-    install -m 644 src/hello.conf $(DESTDIR)$(CONFDIR)/
+    install -m 644 src/user-activity.conf $(DESTDIR)$(CONFDIR)/
 ```
 
 **نکات:**
@@ -235,10 +230,10 @@ command \- توضیح کوتاه
 
 ```bash
 fpm -s dir -t rpm \
-    -n hello-world \
+    -n user-activity-reporter \
     -v 1.0.0 \
     --depends bash \
-    --config-files /etc/hello-world/hello.conf \
+    --config-files /etc/user-activity-reporter/user-activity.conf \
     -C staging/ \
     .
 ```
@@ -250,19 +245,19 @@ fpm -s dir -t rpm \
 ### نصب
 ```bash
 # Debian
-sudo dpkg -i hello-world_1.0.0-1_all.deb
+sudo dpkg -i user-activity-reporter_1.0.1_all.deb
 
 # Fedora
-sudo rpm -i hello-world-1.0.0-1.noarch.rpm
+sudo rpm -i user-activity-reporter-1.0.1.noarch.rpm
 ```
 
 ### حذف
 ```bash
 # Debian
-sudo dpkg -r hello-world
+sudo dpkg -r user-activity-reporter
 
 # Fedora
-sudo rpm -e hello-world
+sudo rpm -e user-activity-reporter
 ```
 
 ---
