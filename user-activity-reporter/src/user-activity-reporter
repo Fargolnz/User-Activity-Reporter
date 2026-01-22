@@ -189,11 +189,16 @@ collect_data() {
     
     if [ "$SHOW_ALL" = true ]; then
         # Get all users with home directories
-        while IFS=: read -r username _ uid _ _ home _; do
-            if [ "$uid" -ge 1000 ] 2>/dev/null && [ "$uid" -lt 65534 ] && [ -d "$home" ]; then
-                users+=("$username")
+        while IFS=: read -r username _ uid gid gecos home shell; do
+            if [ "$uid" -ge 1000 ] 2>/dev/null \
+                && [ "$uid" -lt 65534 ] \
+                && [ -d "$home" ] \
+                && [[ "$shell" != */nologin ]] \
+                && [[ "$shell" != */false ]]; then
+                    users+=("$username")
             fi
         done < /etc/passwd
+
     else
         users=("$SPECIFIC_USER")
     fi
@@ -254,7 +259,7 @@ collect_data() {
         data+=("$user|$last_login_formatted|$duration_seconds|$duration_formatted|$process_count")
     done
 
-    printf '%\n' "${data[@]}"
+    printf '%s\n' "${data[@]}"
 }
 
 # Sort data
@@ -290,7 +295,7 @@ sort_data() {
         result+=("${entry#*|}")
     done
 
-    echo "${result[@]}"
+    printf '%s\n' "${result[@]}"
 }
 
 # Format output as table
@@ -436,7 +441,6 @@ main() {
             
             IFS=$'\n' read -r -d '' -a raw_data < <(collect_data && printf '\0')
             IFS=$'\n' read -r -d '' -a sorted_data < <(sort_data "${raw_data[@]}" && printf '\0')
-
             
             case "$OUTPUT_FORMAT" in
                 table)
@@ -458,9 +462,9 @@ main() {
             sleep "$WATCH_INTERVAL"
         done
     else
-        local raw_data=($(collect_data))
-        local sorted_data=($(sort_data "${raw_data[@]}"))
-        
+        IFS=$'\n' read -r -d '' -a raw_data < <(collect_data && printf '\0')
+        IFS=$'\n' read -r -d '' -a sorted_data < <(sort_data "${raw_data[@]}" && printf '\0')
+
         local output=""
         case "$OUTPUT_FORMAT" in
             table)
