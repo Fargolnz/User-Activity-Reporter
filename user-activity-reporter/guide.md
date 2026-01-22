@@ -96,7 +96,7 @@ mypackage/
 #!/bin/bash
 # hello-world - برنامه اصلی
 
-VERSION="1.0.0"
+VERSION="1.0.1"
 
 # بارگذاری کتابخانه مشترک
 LIB_PATH="/usr/share/hello-world/hello-lib.sh"
@@ -128,7 +128,7 @@ esac
 #!/bin/bash
 # hello-info - نمایش اطلاعات سیستم
 
-VERSION="1.0.0"
+VERSION="1.0.1"
 
 # بارگذاری کتابخانه
 LIB_PATH="/usr/share/hello-world/hello-lib.sh"
@@ -265,7 +265,7 @@ Short output.
 # Makefile for hello-world package
 
 PACKAGE_NAME = hello-world
-VERSION = 1.0.0
+VERSION = 1.0.1
 
 # مسیرهای نصب (قابل تغییر)
 PREFIX ?= /usr
@@ -449,22 +449,22 @@ License: MIT
 
 ### قدم ۱۵: فایل Spec
 
-فایل `rpm/hello-world.spec`:
+فایل `rpm/user-activity-reporter.spec`:
 ```spec
-Name:           hello-world
-Version:        1.0.0
+Name:           user-activity-reporter
+Version:        1.0.1
 Release:        1%{?dist}
-Summary:        A hello world package
+Summary:        User Activity Reporter for Linux
 
 License:        MIT
-URL:            https://github.com/example/hello-world
-Source0:        %{name}-%{version}.tar.gz
+URL:            https://github.com/fargolnz/user-activity-reporter
+Source0:        %{user-activity-reporter}-%{1.0.1}.tar.gz
 
 BuildArch:      noarch
 Requires:       bash
 
 %description
-This package provides hello-world and hello-info commands.
+This package provides information about users and their activities.
 It demonstrates Linux packaging concepts.
 
 %prep
@@ -550,8 +550,8 @@ set -e
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
 BUILD_DIR="$PROJECT_DIR/build/deb"
-PACKAGE_NAME="hello-world"
-VERSION="1.0.0"
+PACKAGE_NAME="user-activity-reporter"
+VERSION="1.0.1"
 
 echo "=== Building Debian Package ==="
 
@@ -587,8 +587,8 @@ set -e
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
 BUILD_DIR="$PROJECT_DIR/build/rpm"
-PACKAGE_NAME="hello-world"
-VERSION="1.0.0"
+PACKAGE_NAME="user-activity-reporter"
+VERSION="1.0.1"
 
 echo "=== Building RPM Package ==="
 

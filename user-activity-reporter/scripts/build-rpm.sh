@@ -7,7 +7,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
 BUILD_DIR="$PROJECT_DIR/build/rpm"
 PACKAGE_NAME="user-activity-reporter"
-VERSION="1.0.0"
+VERSION="1.0.1"
 
 echo "=== Building RPM Package ==="
 

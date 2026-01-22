@@ -134,22 +134,22 @@ dpkg-buildpackage -us -uc -b
 ### فایل Spec
 
 ```spec
-Name:           hello-world
-Version:        1.0.0
+Name:           user-activity-reporter
+Version:        1.0.1
 Release:        1%{?dist}
 BuildArch:      noarch
 Requires:       bash
 
 %install
 # فایل‌های اجرایی
-install -m 755 src/hello-world %{buildroot}%{_bindir}/
-install -m 755 src/hello-info %{buildroot}%{_bindir}/
+install -m 755 src/user-activity-reporter %{buildroot}%{_bindir}/
+install -m 755 src/user-activity-reporter-info %{buildroot}%{_bindir}/
 
 # کتابخانه
-install -m 644 src/hello-lib.sh %{buildroot}%{_datadir}/hello-world/
+install -m 644 src/user-activity-lib.sh %{buildroot}%{_datadir}/hello-world/
 
 # پیکربندی
-install -m 644 src/hello.conf %{buildroot}%{_sysconfdir}/hello-world/
+install -m 644 src/user-activity.conf %{buildroot}%{_sysconfdir}/hello-world/
 
 %files
 %{_bindir}/hello-world

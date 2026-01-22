@@ -1,3 +1,12 @@
+user-activity-reporter (1.0.1) unstable; urgency=medium
+
+  * Fixed critical bash word-splitting bug causing corrupted user data
+  * Corrected user detection and activity parsing
+  * Improved reliability of process counting
+
+ -- Seyyedeh Fargol Nazemzadeh <fargol.nz@gmail.com>  Tue, 21 Jan 2026 21:05:00 +0000
+
+
 user-activity-reporter (1.0.0-1) unstable; urgency=low
 
   * Initial release
@@ -11,4 +20,4 @@ user-activity-reporter (1.0.0-1) unstable; urgency=low
   - Added configurable settings
   - Added activity thresholds and alerts
 
- -- Team Name <team.email@example.com>  Sun, 19 Jan 2026 16:00:00 +0330
+ -- Soltan and Moridan Team  Sun, 19 Jan 2026 16:00:00 +0330

@@ -1,11 +1,11 @@
 Name:           user-activity-reporter
-Version:        1.0.0
+Version:        1.0.1
 Release:        1%{?dist}
 Summary:        User Activity Reporter for Linux
 
 License:        MIT
-URL:            https://github.com/example/user-activity-reporter
-Source0:        %{name}-%{version}.tar.gz
+URL:            https://github.com/fargolnz/user-activity-reporter
+Source0:        %{user-activity-reporter}-%{1.0.1}.tar.gz
 
 BuildArch:      noarch
 Requires:       bash
