@@ -27,12 +27,12 @@ user-activity-reporter/
 │   ├── build-deb.sh
 │   ├── build-rpm.sh
 │   └── build-all.sh
-├── Makefile
-├── LICENSE
-├── GUIDE.md
-├── PACKAGING.md
-├── REPORT.md
-└── README.md
+├── Makefile                      # اسکریپت‌های ساخت
+├── LICENSE                       # مجوز
+├── GUIDE.md                      # آموزش پکیج‌ها
+├── PACKAGING.md                  # راهنمای پکیج‌ها
+├── REPORT.md                     # گزارش پروژه
+└── README.md                     # مستندات
 ```
 
 ---

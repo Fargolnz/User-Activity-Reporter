@@ -73,7 +73,7 @@ user-activity-reporter/
 │   └── build-all.sh
 ├── Makefile                      # اسکریپت‌های ساخت
 ├── LICENSE                       # مجوز
-├── GUIDE.md                      # راهنمای نصب
+├── GUIDE.md                      # آموزش پکیج‌ها
 ├── PACKAGING.md                  # راهنمای پکیج‌ها
 ├── REPORT.md                     # گزارش پروژه
 └── README.md                     # مستندات

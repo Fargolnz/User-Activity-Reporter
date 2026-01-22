@@ -68,21 +68,32 @@ cd mypackage
 ### ساختار نهایی
 
 ```
-mypackage/
-├── src/                    # کد منبع
-│   ├── program1            # فایل اجرایی اول
-│   ├── program2            # فایل اجرایی دوم
-│   ├── common-lib.sh       # کتابخانه مشترک
-│   └── config.conf         # فایل پیکربندی
-├── man/                    # صفحات راهنما
-│   ├── program1.1
-│   └── program2.1
-├── debian/                 # فایل‌های Debian
-├── rpm/                    # فایل‌های RPM
-├── scripts/                # اسکریپت‌های ساخت
-├── Makefile
-├── LICENSE
-└── README.md
+user-activity-reporter/
+├── src/                          # فایل‌های منبع
+│   ├── user-activity-reporter    # برنامه اصلی (اجرایی)
+│   ├── user-activity-lib.sh      # کتابخانه مشترک (غیر اجرایی)
+│   └── user-activity.conf        # فایل پیکربندی (غیر اجرایی)
+├── man/                          # صفحات راهنما
+│   ├── user-activity-reporter.1  # man برای user-activity-reporter
+├── debian/                       # بسته‌بندی Debian
+│   ├── control                   # اطلاعات بسته
+│   ├── changelog                 # تاریخچه تغییرات
+│   ├── rules                     # قوانین ساخت
+│   ├── copyright                 # مجوز
+│   ├── install                   # فهرست نصب
+│   └── source/format
+├── rpm/                          # بسته‌بندی RPM
+│   └── user-activity-reporter.spec # فایل spec
+├── scripts/                      # اسکریپت‌های ساخت
+│   ├── build-deb.sh
+│   ├── build-rpm.sh
+│   └── build-all.sh
+├── Makefile                      # اسکریپت‌های ساخت
+├── LICENSE                       # مجوز
+├── GUIDE.md                      # آموزش پکیج‌ها
+├── PACKAGING.md                  # راهنمای پکیج‌ها
+├── REPORT.md                     # گزارش پروژه
+└── README.md                     # مستندات
 ```
 
 ---
