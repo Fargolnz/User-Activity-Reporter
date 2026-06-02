@@ -1,11 +1,11 @@
 Name:           user-activity-reporter
-Version:        1.0.1
+Version:        1.1.0
 Release:        1%{?dist}
 Summary:        User Activity Reporter for Linux
 
 License:        MIT
 URL:            https://github.com/fargolnz/user-activity-reporter
-Source0:        %{user-activity-reporter}-%{1.0.1}.tar.gz
+Source0:        %{user-activity-reporter}-%{1.1.0}.tar.gz
 
 BuildArch:      noarch
 Requires:       bash
@@ -57,7 +57,7 @@ install -m 644 man/user-activity-reporter.1 %{buildroot}%{_mandir}/man1/user-act
 %{_mandir}/man1/user-activity-reporter.1*
 
 %changelog
-* Sun Jan 19 2026 Soltan and Moridan Team <fargol.nz@gmail.com> - 1.0.0-1
+* Sun Jan 19 2026 Soltan and Moridan Team <fargol.nz@gmail.com> - 1.0.0
 - Initial release
 - Added user activity monitoring with login times
 - Added online duration tracking

@@ -2,7 +2,7 @@
 # user-activity-reporter - User Activity Reporter for Linux
 # Part of user-activity-reporter package
 
-VERSION="1.0.1"
+VERSION="1.1.0"
 LIB_PATH="./user-activity-lib.sh"
 CONF_PATH="./user-activity.conf"
 

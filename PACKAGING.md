@@ -133,7 +133,7 @@ dpkg-buildpackage -us -uc -b
 
 ```spec
 Name:           user-activity-reporter
-Version:        1.0.1
+Version:        1.1.0
 Release:        1%{?dist}
 BuildArch:      noarch
 Requires:       bash
@@ -231,7 +231,7 @@ command \- توضیح کوتاه
 ```bash
 fpm -s dir -t rpm \
     -n user-activity-reporter \
-    -v 1.0.0 \
+    -v 1.1.0 \
     --depends bash \
     --config-files /etc/user-activity-reporter/user-activity.conf \
     -C staging/ \
@@ -245,10 +245,10 @@ fpm -s dir -t rpm \
 ### نصب
 ```bash
 # Debian
-sudo dpkg -i user-activity-reporter_1.0.1_all.deb
+sudo dpkg -i user-activity-reporter_1.1.0_all.deb
 
 # Fedora
-sudo rpm -i user-activity-reporter-1.0.1.noarch.rpm
+sudo rpm -i user-activity-reporter-1.1.0.noarch.rpm
 ```
 
 ### حذف

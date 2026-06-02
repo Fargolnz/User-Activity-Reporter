@@ -107,7 +107,7 @@ user-activity-reporter/
 #!/bin/bash
 # user-activity-reporter - برنامه اصلی
 
-VERSION="1.0.1"
+VERSION="1.1.0"
 
 # بارگذاری کتابخانه مشترک
 LIB_PATH="/usr/share/user-activity-reporter/user-activity-lib.sh"
@@ -176,7 +176,7 @@ chmod 644 src/user-activity.conf
 
 فایل `man/user-activity-reporter.1`:
 ```troff
-.TH USER-ACTIVITY-REPORTER 1 "January 2026" "user-activity-reporter 1.0.1" "User Commands"
+.TH USER-ACTIVITY-REPORTER 1 "January 2026" "user-activity-reporter 1.1.0" "User Commands"
 .SH NAME
 user-activity-reporter \- User Activity Reporter for Linux
 .SH SYNOPSIS
@@ -239,7 +239,7 @@ Reverse the sort order.
 # Makefile for user-activity-reporter package
 
 PACKAGE_NAME = user-activity-reporter
-VERSION = 1.0.1
+VERSION = 1.1.0
 
 # مسیرهای نصب (قابل تغییر)
 PREFIX ?= /usr
@@ -345,7 +345,7 @@ user-activity-reporter (1.0.0-1) unstable; urgency=low
 ```
 
 **فرمت نسخه**: `VERSION-REVISION`
-- `1.0.1` = نسخه upstream
+- `1.1.0` = نسخه upstream
 - `1` = شماره revision دبیان
 
 ### قدم ۹: فایل rules
@@ -418,13 +418,13 @@ License: MIT
 فایل `rpm/user-activity-reporter.spec`:
 ```spec
 Name:           user-activity-reporter
-Version:        1.0.1
+Version:        1.1.0
 Release:        1%{?dist}
 Summary:        User Activity Reporter for Linux
 
 License:        MIT
 URL:            https://github.com/fargolnz/user-activity-reporter
-Source0:        %{user-activity-reporter}-%{1.0.1}.tar.gz
+Source0:        %{user-activity-reporter}-%{1.1.0}.tar.gz
 
 BuildArch:      noarch
 Requires:       bash
@@ -513,7 +513,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
 BUILD_DIR="$PROJECT_DIR/build/deb"
 PACKAGE_NAME="user-activity-reporter"
-VERSION="1.0.1"
+VERSION="1.1.0"
 
 echo "=== Building Debian Package ==="
 
@@ -550,7 +550,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
 BUILD_DIR="$PROJECT_DIR/build/rpm"
 PACKAGE_NAME="user-activity-reporter"
-VERSION="1.0.1"
+VERSION="1.1.0"
 
 echo "=== Building RPM Package ==="
 
@@ -602,10 +602,10 @@ chmod +x scripts/*.sh
 
 ```bash
 # Debian/Ubuntu
-sudo dpkg -i build/deb/user-activity-reporter_1.0.1_all.deb
+sudo dpkg -i build/deb/user-activity-reporter_1.1.0_all.deb
 
 # Fedora/RHEL
-sudo rpm -i build/rpm/user-activity-reporter-1.0.1.noarch.rpm
+sudo rpm -i build/rpm/user-activity-reporter-1.1.0.noarch.rpm
 ```
 
 ### قدم ۱۸: تست
@@ -644,7 +644,7 @@ sudo gem install fpm
 # ساخت RPM
 fpm -s dir -t rpm \
     -n user-activity-reporter \
-    -v 1.0.0 \
+    -v 1.1.0 \
     --description "User Activity Reporter for Linux" \
     --depends bash \
     --config-files /etc/user-activity-reporter/user-activity.conf \
@@ -654,7 +654,7 @@ fpm -s dir -t rpm \
 # ساخت DEB
 fpm -s dir -t deb \
     -n user-activity-reporter \
-    -v 1.0.0 \
+    -v 1.1.0 \
     usr/=/usr/ \
     etc/=/etc/
 ```

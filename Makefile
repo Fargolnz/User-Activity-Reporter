@@ -1,7 +1,7 @@
 # Makefile for user-activity-reporter package
 
 PACKAGE_NAME = user-activity-reporter
-VERSION = 1.0.1
+VERSION = 1.1.0
 PREFIX ?= /usr
 BINDIR ?= $(PREFIX)/bin
 DATADIR ?= $(PREFIX)/share/$(PACKAGE_NAME)
