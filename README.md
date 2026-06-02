@@ -1,19 +1,16 @@
-# User Activity Reporter
+# 💻 User Activity Reporter
 
-A comprehensive CLI tool for monitoring and reporting user activities on Linux systems.
-
-## Overview
-
+## 📌 Introduction
 **user-activity-reporter** is a command-line tool designed for system administrators to track user activities including login times, online duration, and active process counts. It provides real-time monitoring capabilities and supports multiple export formats.
 
-## Developers
+## 👩🏻‍💻 Developers
 
-- Seyyedeh Fargol Nazemzadeh
-- Zahra Kamalian
-- Reihaneh Sharifi
-- Fatemeh Mohammadganji
+- **Seyyedeh Fargol Nazemzadeh**
+- **Zahra Kamalian**
+- **Reihaneh Sharifi**
+- **Fatemeh Mohammadganji**
 
-## Features
+## ⭐ Features
 
 - **User Activity Monitoring**: Track last login times, online duration, and process counts
 - **Real-time Monitoring**: Watch mode with configurable refresh intervals
@@ -24,7 +21,7 @@ A comprehensive CLI tool for monitoring and reporting user activities on Linux s
 - **Activity Thresholds**: Alert when process counts exceed specified limits
 - **Standard CLI Options**: Support for `--help` and `--version` flags
 
-## Project Structure
+## 🗂️ Project Structure
 
 ```
 user-activity-reporter/
@@ -45,7 +42,7 @@ user-activity-reporter/
 └── README.md                     # This file
 ```
 
-## Installation
+## 🚀 Installation
 
 ### Debian/Ubuntu
 
@@ -90,7 +87,7 @@ sudo mkdir -p /usr/share/man/man1
 sudo cp man/user-activity-reporter.1 /usr/share/man/man1/
 ```
 
-## Usage
+## 🧩 Usage
 
 ### Basic Usage
 
@@ -163,7 +160,7 @@ user-activity-reporter --threshold 50
 user-activity-reporter -u username -s processes -r --threshold 100
 ```
 
-## Command Options
+## 📋 Command Options
 
 | Option | Description |
 |--------|-------------|
@@ -180,7 +177,7 @@ user-activity-reporter -u username -s processes -r --threshold 100
 | `--no-color` | Disable colored output |
 | `--threshold N` | Alert if process count exceeds N |
 
-## Output Formats
+## 📄 Output Formats
 
 ### Table Format (Default)
 
@@ -215,7 +212,7 @@ root,2026-01-19T14:30:00+03:30,8100,2h 15m,45
 fargol,2026-01-19T16:00:00+03:30,450,7m 30s,12
 ```
 
-## Configuration
+## ⚙️ Configuration
 
 The configuration file is located at `/etc/user-activity-reporter/user-activity.conf`.
 
@@ -251,7 +248,7 @@ DEFAULT_SORT_ORDER="asc"
 DEFAULT_SORT_FIELD="user"
 ```
 
-## Files Installed
+## 📥 Files Installed
 
 | File | Location | Permission | Type |
 |------|----------|------------|------|
@@ -260,7 +257,7 @@ DEFAULT_SORT_FIELD="user"
 | user-activity.conf | /etc/user-activity-reporter/ | 644 | Config |
 | user-activity-reporter.1 | /usr/share/man/man1/ | 644 | Man page |
 
-## Uninstallation
+## 🗑️ Uninstallation
 
 ### Debian/Ubuntu
 
@@ -280,13 +277,13 @@ sudo rpm -e user-activity-reporter
 sudo make uninstall
 ```
 
-## Requirements
+## 📦 Requirements
 
 - Bash 4.0 or higher
 - Standard Linux utilities: `who`, `last`, `ps`, `date`, `getent`
 - Read access to `/etc/passwd`, `/var/log/wtmp`, and `/proc`
 
-## Building from Source
+## 🛠️ Building from Source
 
 ```bash
 # Make scripts executable
@@ -307,11 +304,11 @@ make package
 
 Output will be in the `build/` directory.
 
-## Documentation
+## 📚 Documentation
 
 - **Man Page**: `man user-activity-reporter`
 
-## Examples
+## 💡 Examples
 
 ### Monitor specific user in real-time
 
@@ -337,7 +334,7 @@ user-activity-reporter -s processes -r --threshold 50
 user-activity-reporter -o activity.csv -f csv
 ```
 
-## Troubleshooting
+## 🔧 Troubleshooting
 
 ### Permission Denied
 
@@ -361,17 +358,17 @@ Verify the user exists:
 id username
 ```
 
-## License
+## ⚖️ License
 
 MIT License - See [LICENSE](LICENSE) file.
 
 
-## Contributing
+## 🎓 Academic Project
 
 This project was developed as a final project for the Operating Systems Lab course at the University of Tehran.
 
-## Acknowledgments
+## 🙏 Acknowledgments
 
-- University of Tehran - Faculty of Farabi
-- Operating Systems Lab
-- Academic Year 1404-1405
+- Faculty of Farabi, University of Tehran
+- Operating Systems Laboratory Course
+- Academic Year 1404–1405
